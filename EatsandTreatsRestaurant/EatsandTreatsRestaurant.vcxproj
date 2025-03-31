@@ -128,12 +128,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="EatsandTreatsRestaurant.cpp" />
+    <ClCompile Include="include\menu.cpp" />
+    <ClCompile Include="include\order.cpp" />
+    <ClCompile Include="include\table.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="raygui.h" />
+    <ClInclude Include="include\currentmenu.h" />
+    <ClInclude Include="include\menu.h" />
+    <ClInclude Include="include\order.h" />
+    <ClInclude Include="include\raygui.h" />
+    <ClInclude Include="include\table.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

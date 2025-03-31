@@ -18,12 +18,33 @@
     <ClCompile Include="EatsandTreatsRestaurant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\menu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="include\order.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="raygui.h">
+    <ClInclude Include="include\raygui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\menu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\order.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\currentmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
