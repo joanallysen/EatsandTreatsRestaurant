@@ -31,21 +31,24 @@ private:
     Rectangle positionAndSize;
     Occupancy tableState;
     unsigned int seatingCapacity;
+
 public:
-    Table(float _posX = 0, float _posY = 0, float _width = 0, float _height = 0, Occupancy _condition = Occupancy::AVAILABLE);
+    Table(float _posX = 0, float _posY = 0, float _width = 0, float _height = 0, unsigned int tableNumber = 1, Occupancy _condition = Occupancy::AVAILABLE);
 
     Rectangle getPositionAndSize() const;
     Occupancy getOccupancy() const;
     unsigned int getTableNumber() const;
+    void setTableNumber(unsigned int tableNumber);
+    void setOccupancy(unsigned int occupancy);
 };
 
 class TableManager {
 private:
     static std::map<unsigned int, Table> numToTables;
-    static int currentTable;
+    static Table currentTable;
 
 public:
-    static int getCurrentTable();
+    static Table getCurrentTable();
     static void initializeTables();  // Method to initialize tables
     static void drawTable(CurrentMenu afterHittingButton);
 };

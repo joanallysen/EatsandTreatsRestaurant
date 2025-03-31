@@ -85,22 +85,45 @@ void kitchenStaff() {
 char tableStateInput[100] = "";
 char tableNumberInput[100] = "";
 char seatingCapacityInput[100] = "";
+
+const int maxInputBox = 2;  // number of input boxes
+char inputs[maxInputBox][64] = { "" };  // 3 box 64 letter each
+bool editMode[maxInputBox] = { false }; // fill all element with false
+
 void tableEditorProcess() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
-        string text = "Table number " + to_string(TableManager::getCurrentTable());
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Edit Process");
+        Table currentTable = TableManager::getCurrentTable();
+        string text = "Table number " + to_string(currentTable.getTableNumber());
+        cout << currentTable.getTableNumber() << endl;
         DrawText(text.c_str(), centerWidth - MeasureText(text.c_str(), 58) / 2, centerHeight - 300, 58, BLACK);
-        if (GuiTextBox(Rectangle{ centerWidth, centerHeight, 200, 100 }, tableStateInput, sizeof(100), true)) {
-            cout << tableStateInput << endl;
+        
+        DrawText("New Table Number: ", centerWidth - MeasureText("New Table Number: ", 24) / 2 - 300, centerHeight - 70, 24, BLACK);
+        DrawText("New Seating Capacity: ", centerWidth - MeasureText("New Seating Capacity: ", 24) / 2 - 300, centerHeight, 24, BLACK);
+        for (int i = 0; i < maxInputBox; i++) { 
+            Rectangle box = { centerWidth - 100, centerHeight - (i * 80), 300, 50 };
+            // If clicked, toggle editing mode
+            if (GuiTextBox(box, inputs[i], 64, editMode[i])) { // make the 3 boxes with all edit mode being false, if clicked it will see what box have been clicked(j) and put it to editmode.
+                for (int j = 0; j < maxInputBox; j++) {
+                    if (i == j){
+                        editMode[j] = true;
+                    }
+                    else {
+                        editMode[j] = false;
+                    }
+                    if (i == 0) {
+                        //currentTable.setTableNumber(stoi(inputs[i]));
+                    }
+                    else if (i == 1) {
+                        //currentTable.setOccupancy(stoi(inputs[i]));
+                    }
+                }
+            }
         }
-        if (GuiTextBox(Rectangle{ centerWidth, centerHeight - 80, 200, 100 }, tableNumberInput, sizeof(100), true)) {
-            // This gets triggered when the text box content changes
-            // You can add any logic you want here
-        }
-        if (GuiTextBox(Rectangle{ centerWidth, centerHeight - 160, 200, 100 }, seatingCapacityInput, sizeof(100), true)) {
-            // This gets triggered when the text box content changes
-            // You can add any logic you want here
+
+        if (GuiButton(Rectangle{ centerWidth + 400, centerHeight + 100, 200, 40 }, "SUBMIT")) {
+            currentMenu = TABLE_EDITOR;
         }
     }
     else {
@@ -110,31 +133,6 @@ void tableEditorProcess() {
 }
 
 
-
-void tableEditorProcessTwo() {
-    if (!exitWindow) {
-        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
-        string text = "You have pick table number " + TableManager::getCurrentTable();
-        DrawText(text.c_str(), centerWidth - MeasureText(text.c_str(), 58) / 2, centerHeight - 300, 58, BLACK);
-        if (GuiTextBox(Rectangle { centerWidth, centerHeight, 200, 100 }, tableStateInput, sizeof(100), true)) {
-            cout << tableStateInput << endl;
-        }
-        if (GuiTextBox(Rectangle { centerWidth, centerHeight - 80, 200, 100 }, tableNumberInput, sizeof(100), true)) {
-            // This gets triggered when the text box content changes
-            // You can add any logic you want here
-        }
-        if (GuiTextBox(Rectangle { centerWidth, centerHeight - 160, 200, 100 }, seatingCapacityInput, sizeof(100), true)) {
-            // This gets triggered when the text box content changes
-            // You can add any logic you want here
-        }
-        TableManager::drawTable(TABLE_EDITOR_PROCESS);
-    }
-    else {
-        exitWindow = false;
-        currentMenu = MAIN_MENU;
-    }
-}
 
 void tableEditor() {
     if (!exitWindow) {
@@ -233,8 +231,6 @@ void update() {
             case CurrentMenu::TABLE_EDITOR_PROCESS:
                 tableEditorProcess();
                 break;
-            case CurrentMenu::TABLE_EDITOR_PROCESS_TWO:
-                tableEditorProcessTwo();
             default:
                 break;
         }
