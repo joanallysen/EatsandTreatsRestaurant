@@ -28,28 +28,32 @@ extern const int centerHeight;
 class Table {
 private:
     unsigned int tableNumber;
-    Rectangle positionAndSize;
     Occupancy tableState;
     unsigned int seatingCapacity;
 
 public:
-    Table(float _posX = 0, float _posY = 0, float _width = 0, float _height = 0, unsigned int tableNumber = 1, Occupancy _condition = Occupancy::AVAILABLE);
+    Table(unsigned int tableNumber = 1, unsigned int seatingCapacity = 1, Occupancy _condition = Occupancy::AVAILABLE);
 
-    Rectangle getPositionAndSize() const;
     Occupancy getOccupancy() const;
     unsigned int getTableNumber() const;
-    void setTableNumber(unsigned int tableNumber);
-    void setOccupancy(unsigned int occupancy);
+    unsigned int getCapacity() const;
+    void setTableNumber(unsigned int _tableNumber);
+    void setCapacity(unsigned int _capacity);
 };
 
 class TableManager {
 private:
-    static std::map<unsigned int, Table> numToTables;
+    static std::map<int, Table> numToTables;
     static Table currentTable;
+    static unsigned int currentTableIndex;
 
 public:
     static Table getCurrentTable();
     static void initializeTables();  // Method to initialize tables
     static void drawTable(CurrentMenu afterHittingButton);
+    static void updateTableNumber(unsigned int newTableNumber);
+    static void updateTableCapacity(unsigned int newTableCapacity);
+    static void addTable();
+    static void deleteTable();
 };
 

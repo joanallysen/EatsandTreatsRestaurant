@@ -3,17 +3,17 @@
 #include <string>
 
 
-Table::Table(float _posX, float _posY, float _width, float _height, unsigned int _tableNumber, Occupancy _condition)
-    : positionAndSize{ _posX, _posY, _width, _height }, tableState(_condition), tableNumber(_tableNumber) {}
+Table::Table(unsigned int _tableNumber, unsigned int _seatingCapacity, Occupancy _condition)
+    : tableState(_condition), seatingCapacity(_seatingCapacity), tableNumber(_tableNumber) {}
 
-// Get position and size of the table
-Rectangle Table::getPositionAndSize() const {
-    return positionAndSize;
-}
 
 // Get table occupancy status
 Occupancy Table::getOccupancy() const {
     return tableState;
+}
+
+unsigned int Table::getCapacity() const {
+    return seatingCapacity;
 }
 
 unsigned int Table::getTableNumber() const {
@@ -24,32 +24,73 @@ void Table::setTableNumber(unsigned int _tableNumber) {
     tableNumber = _tableNumber;
 }
 
-void Table::setOccupancy(unsigned int _capacity) {
+void Table::setCapacity(unsigned int _capacity) {
     seatingCapacity = _capacity;
 }
 
+// number to tables map.
+std::map<int, Table> TableManager::numToTables;
+
 void TableManager::initializeTables() {
-    numToTables[1] = (Table(centerWidth - 200 - 40, centerHeight - 200, 80, 80, 1));
-    numToTables[2] = (Table(centerWidth - 40, centerHeight - 200, 80, 80, 2));
-    numToTables[3] = (Table(centerWidth + 200 - 40, centerHeight - 200, 80, 80, 3));
-    numToTables[4] = (Table(centerWidth - 200 - 40, centerHeight, 80, 80, 4));
-    numToTables[5] = (Table(centerWidth - 40, centerHeight, 80, 80, 5));
-    numToTables[6] = (Table(centerWidth + 200 - 40, centerHeight, 80, 80, 6));
-    numToTables[7] = (Table(centerWidth - 200 - 40, centerHeight + 200, 80, 80, 7));
-    numToTables[8] = (Table(centerWidth - 40, centerHeight + 200, 80, 80, 8));
+    numToTables[0] = (Table(1, 4, Occupancy::AVAILABLE));
+    numToTables[1] = (Table(2, 2, Occupancy::AVAILABLE));
+    numToTables[2] = (Table(3, 2, Occupancy::AVAILABLE));
+    numToTables[3] = (Table(4, 2, Occupancy::AVAILABLE));
+    numToTables[4] = (Table(5, 2, Occupancy::AVAILABLE));
+    numToTables[5] = (Table(6, 3, Occupancy::AVAILABLE));
+    numToTables[6] = (Table(7, 4, Occupancy::AVAILABLE));
+    numToTables[7] = (Table(8, 4, Occupancy::AVAILABLE));
 }
 
+// this function also update the current table that the user is looking.
 void TableManager::drawTable(CurrentMenu afterHittingButton) {
-    int gap = 400;
-    for (const auto& table : numToTables) {
-        if (GuiButton(table.second.getPositionAndSize(), std::to_string(table.second.getTableNumber()).c_str())) {
-            currentTable = table.second;
-            currentMenu = afterHittingButton;
+    int row = 3; int col = 3;
+    int offset = 350; int gap = 40;
+    if (numToTables.size() > 9) { col = 5; offset = 550; }
+    if (numToTables.size() > 15) { col = 7; offset = 750; }
+
+    Rectangle buttonRect = { centerWidth - offset - gap, centerHeight - offset - (gap * 2) };
+
+    std::map<int, Table>::iterator it = numToTables.begin();
+    for (int i = row; i > 0; i--)
+    {
+        for (int j = col; j > 0; j--) {
+            if (it == numToTables.end()) return;
+            if (GuiButton(Rectangle{float(centerWidth - (j * 200) + offset), float(centerHeight - i*200 + 400), 80, 80}, std::to_string(it->second.getTableNumber()).c_str())) {
+                currentTable = it->second;
+                currentTableIndex = it->first;
+                currentMenu = afterHittingButton;
+            }
+            it++;
         }
     }
 }
 Table TableManager::currentTable = -1;
-Table TableManager::getCurrentTable() {
-    return currentTable;
+unsigned int TableManager::currentTableIndex = -1;
+
+// return the table that user is looking on.
+Table TableManager::getCurrentTable() { // return current Table that user want to see the info of
+    return numToTables[currentTableIndex];
 }
-std::map<unsigned int, Table> TableManager::numToTables;
+
+void TableManager::updateTableNumber(unsigned int newTableNumber) {
+    std::cout << "Updating table #" << currentTableIndex << " number to: " << newTableNumber << std::endl;
+    numToTables[currentTableIndex].setTableNumber(newTableNumber);
+}
+
+void TableManager::updateTableCapacity(unsigned int newTableCapacity) {
+    std::cout << "Updating table #" << currentTableIndex << " capacity to: " << newTableCapacity << std::endl;
+    numToTables[currentTableIndex].setCapacity(newTableCapacity);
+}
+
+void TableManager::addTable() {
+    std::cout << "A new table is added, index: " << numToTables.size() << std::endl;
+
+    numToTables.insert({ numToTables.rbegin()->first + 1, Table(0, 4, Occupancy::AVAILABLE)});
+    
+}
+
+void TableManager::deleteTable() {
+    std::cout << currentTableIndex << std::endl;
+    numToTables.erase(currentTableIndex);
+}
