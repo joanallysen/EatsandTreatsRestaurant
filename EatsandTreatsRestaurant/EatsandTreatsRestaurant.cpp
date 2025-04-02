@@ -20,7 +20,7 @@ const int centerWidth = screenWidth / 2;
 const int centerHeight = screenHeight / 2;
 
 const int tableOffsetWidth = 200;
-
+// note, font size 58, 24
 
 CurrentMenu currentMenu = MAIN_MENU;
 
@@ -33,12 +33,6 @@ bool is_number(const string& s) {
 }
 
 
-
-class Menu {
-    string itemName{};
-    string description{};
-    float prices{};
-};
 
 bool toggleState1 = false;
 bool toggleState2 = false;
@@ -93,6 +87,18 @@ void kitchenStaff() {
 
 }
 
+void menuEditorProcess() {
+    if (!exitWindow) {
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Edit Process");
+        shared_ptr<Item> pickedItem = Menu::getSharedPtrItem();
+        cout << pickedItem->getItemName() << endl;
+    }
+    else {
+        exitWindow = false;
+        currentMenu = MENU_EDITOR;
+    }
+}
 
 const int maxInputBox = 2;  // number of input boxes
 char inputs[maxInputBox][64] = { "" };  // 2 box 64 letter each
@@ -152,7 +158,7 @@ void tableEditorProcess() {
     }
     else {
         exitWindow = false;
-        currentMenu = MAIN_MENU;
+        currentMenu = EDITOR;
     }
 }
 
@@ -161,7 +167,7 @@ void tableEditorProcess() {
 void tableEditor() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Editor Menu");
         DrawText("Please pick a table to edit", centerWidth - MeasureText("Please pick a table to edit", 58) / 2, centerHeight - 300, 58, BLACK);
         TableManager::drawTable(TABLE_EDITOR_PROCESS);
 
@@ -176,7 +182,15 @@ void tableEditor() {
 }
 
 void menuEditor() {
-
+    if (!exitWindow) {
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Menu Editor Menu");
+        Menu::drawMenuEditor();
+    }
+    else {
+        exitWindow = false;
+        currentMenu = MAIN_MENU;
+    }
 }
 
 void editorMenu() {
@@ -190,7 +204,7 @@ void editorMenu() {
         }
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight + 100, 200, 40 }, "MENU")) {
             exitWindow = false;
-            currentMenu = EDITOR;
+            currentMenu = MENU_EDITOR;
         }
     }
     else {
@@ -256,10 +270,13 @@ void update() {
                 tableEditor();
                 break;
             case CurrentMenu::MENU_EDITOR:
-                editorMenu();
+                menuEditor();
                 break;
             case CurrentMenu::TABLE_EDITOR_PROCESS:
                 tableEditorProcess();
+                break;
+            case CurrentMenu::MENU_EDITOR_PROCESS:
+                menuEditorProcess();
                 break;
             default:
                 break;
@@ -277,6 +294,7 @@ int main()
     // im adjusting so it is similar to unity where it used start() and update()
     //APP PREPARATION
     TableManager::initializeTables();
+    Menu::initializeMenu();
     InitWindow(screenWidth, screenHeight, "Eats and Treats");
     SetTargetFPS(60);
     update();
@@ -291,3 +309,8 @@ int main()
 
             if (result >= 0) showMessageBox = false;
         }*/
+
+// LIL TODO LIST FOR ME
+/*
+TOMORROW IS THE MENU MANAGEMENT 
+*/
