@@ -1,13 +1,16 @@
 #pragma once
 #include <unordered_map>
 #include <string>
+#include <memory>
+#include <map>
+#include "menu.h"
 
+class Item;
 class Order {
-    unordered_map<std::string, float> orderedItemToPrice{};
+private:
     std::string specialRequest{};
 
 public:
-    // add order and remove order is already in the toggle box ray gui
-    void editOrder() {};
-    void cancelOrder() {};
+    std::map<int, std::shared_ptr<Item>> numToUserOrder;
+    void addOrder(std::shared_ptr<Item> item);
 };

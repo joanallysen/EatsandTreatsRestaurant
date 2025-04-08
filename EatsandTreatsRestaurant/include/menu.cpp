@@ -4,78 +4,127 @@
 using namespace std;
 
 
+void Item::debug() const {cout << "a new item has been created" << endl;}
 
-Item::Item(const std::string& _itemName, const std::string& _description, float _price) :
-	itemName(_itemName), description(_description), price(_price) {
-}
+const string& Item::getName() const { return name; }
+const string& Item::getDescription() const {return description;}
+float Item::getPrice() const {return price;}
+void Item::setName(string &_name) { name = _name; }
+void Item::setDescription(string &_description) { description = _description; }
+void Item::setPrice(float _price) { price = _price; }
 
-void Item::debug() const {
-	cout << "a new item has been created" << endl;
-}
+//Drink::Drink(const char* _name, const char* _description, float _price): Item(_name, _description, _price) {}
+void Drink::debug() const {cout << " a new DRINK has been created" << endl;}
 
-string Item::getItemName() const {
-	return itemName;
-}
-
-Drink::Drink(const std::string& _itemName, const std::string& _description, float _price) :
-	Item(_itemName, _description, _price) {
-}
-
-void Drink::debug() const {
-	cout << " a new DRINK has been created" << endl;
-}
-
-
-Food::Food(const std::string& _itemName, const std::string& _description, float _price) :
-	Item(_itemName, _description, _price) {
-}
-
+//Food::Food(const char* _name, const char* _description, float _price) : Item(_name, _description, _price) {}
 void Food::debug() const{
 	cout << " a new FOOD has been created" << endl;
 }
 
-Special::Special(const std::string& _itemName, const std::string& _description, float _price) :
-	Item(_itemName, _description, _price) {}
-
-
+//Special::Special(const char* _name, const char* _description, float _price) : Item(_name, _description, _price) {}
 void Special::debug() const {
 	cout << " a new SPECIAL has been created" << endl;
 }
 
 
-std::map<int, std::shared_ptr<Item>> Menu::numToItem;
+std::map<int, std::shared_ptr<Item>> Menu::numToItems;
 float Menu::totalIncomeToday = 0.0f;
 
-void Menu::initializeMenu() {
-	numToItem[0] = std::make_shared<Special>("Spicy Miso Ramen Tacos", "A unique fusion of ramen noodles wrapped in a soft taco shell, topped with spicy miso broth, crispy pork belly, and pickled vegetables.", 18.00f);
-	numToItem[1] = std::make_shared<Special>("Sushi Burrito Supreme", "A giant sushi roll turned into a burrito with fresh salmon, avocado, cucumber, and a drizzle of spicy mayo, all wrapped in seaweed and rice.", 22.00f);
-	numToItem[2] = std::make_shared<Special>("Crispy Tempura Avocado Toast", "A crunchy tempura-fried avocado slice served on a toasted brioche with a soy sauce drizzle and sesame seeds.", 14.00f);
-	numToItem[3] = std::make_shared<Special>("Korean BBQ Beef Wellington", "A twist on the classic Beef Wellington, using tender Korean BBQ marinated beef wrapped in puff pastry with a kimchi aioli.", 28.00f);
-	numToItem[4] = std::make_shared<Special>("Tandoori Chicken Bao Buns", "Soft bao buns filled with tender, tandoori-spiced chicken, topped with cucumber ribbons, and drizzled with raita.", 16.00f);
-					
-	numToItem[5] = std::make_shared<Food>("Mango Sticky Rice Spring Rolls", "Fresh spring rolls stuffed with sweet coconut rice and mango slices, served with a side of condensed milk for dipping.", 12.00f);
-	numToItem[6] = std::make_shared<Food>("Kimchi Fried Rice", "A flavorful fried rice made with tangy kimchi, mixed veggies, and topped with a fried egg and sesame seeds.", 16.00f);
-	numToItem[7] = std::make_shared<Food>("Peking Duck Pizza", "A crispy thin crust pizza topped with Peking duck, hoisin sauce, and fresh cilantro.", 22.00f);
-	numToItem[8] = std::make_shared<Food>("Truffle Soy Udon", "Soft udon noodles served in a savory truffle soy broth, garnished with shiitake mushrooms, green onions, and a soft-boiled egg.", 20.00f);
-	numToItem[9] = std::make_shared<Food>("Sichuan Spicy Hot Wings", "Crispy chicken wings tossed in a bold Sichuan peppercorn sauce, with a hint of garlic and chili oil.", 14.00f);
-
-	numToItem[10] = std::make_shared<Drink>("Lychee Rose Mojito", "A refreshing twist on a classic mojito, with lychee fruit, fresh mint, rose water, and rum.", 10.00f);
-	numToItem[11] = std::make_shared<Drink>("Matcha Latte Fizz", "A fizzy, green matcha latte with a hint of vanilla syrup and soda water, served over ice.", 8.00f);
-	numToItem[12] = std::make_shared<Drink>("Thai Iced Tea Lemonade", "A blend of sweetened Thai iced tea mixed with tart lemonade for a balanced fusion of flavors.", 7.00f);
-	numToItem[13] = std::make_shared<Drink>("Yuzu Ginger Mule", "A zesty combination of yuzu citrus, ginger beer, and vodka, served in a chilled copper mug.", 12.00f);
-	numToItem[14] = std::make_shared<Drink>("Passionfruit Sake Sangria", "A tropical sangria made with passionfruit puree, sake, white wine, and fresh fruit slices.", 14.00f);
-}
 
 std::shared_ptr<Item> Menu::currentSharedPtr = {};
+int Menu::currentItemIndex = {};
 
 std::shared_ptr<Item> Menu::getSharedPtrItem() {
-	cout << "DEBUG, NUMBER OF REFERENCE COUNT:" << currentSharedPtr.use_count() << endl;
+	/*cout << "DEBUG, NUMBER OF REFERENCE COUNT:" << currentSharedPtr.use_count() << endl;*/
 	return currentSharedPtr;
 }
 
+// Planned to use type_info& type to add item based on their type, realized that's time consuming
+// And also not readable and also du to time constraint, I'm just gonna use int.
+// (Special, 0), (Food, 1), (Drink, 2)
+void Menu::addItem(int type) {
+	// check if there's any item
+	if (numToItems.empty()) return;
+
+	std::shared_ptr<Item> newItem;
+	switch (type) {
+	case 0:
+		newItem = std::make_shared<Special>("New Special", "...", 0.0f);
+		break;
+	case 1:
+		newItem = std::make_shared<Food>("New Food", "...", 0.0f);
+		break;
+	case 2:
+		newItem = std::make_shared<Drink>("New Drink", "...", 0.0f);
+		break;
+	}
+
+	numToItems[numToItems.rbegin()->first + 1] = newItem; // reason why I use this is after deletion is not truly gone. The index is skipped
+}
+void Menu::deleteCurrentItem() {
+	numToItems.erase(currentItemIndex);
+}
+
+
+
+void Menu::drawMenuOrder() {
+	DrawText("Please pick an item to order", centerWidth - MeasureText("Please click an item to order", 58) / 2, centerHeight - 300, 58, BLACK);
+
+	DrawText("Special", centerWidth - MeasureText("Special", 40) / 2 - 650, centerHeight - 200, 40, BLACK);
+	DrawText("Meals", centerWidth - MeasureText("Meals", 40) / 2 - 300, centerHeight - 200, 40, BLACK);
+	DrawText("Drinks", centerWidth - MeasureText("Drinks", 40) / 2 + 50, centerHeight - 200, 40, BLACK);
+	DrawText("Customer Order", centerWidth - MeasureText("Customer Order", 40) / 2 + 750, centerHeight - 200, 40, BLACK);
+
+	// if one of the special item is hit.
+	int gap = 50;
+	int i = 0;
+
+	shared_ptr<Order> currentOrder = TableManager::getCurrentTableOrderPointer();
+	for (const auto& special : numToItems) {
+		auto temp = std::dynamic_pointer_cast<Special>(special.second);
+		if (!temp) continue;
+		if (GuiButton(Rectangle{ float(centerWidth - 800), float(centerHeight) + i * gap - 100, 300, 40 }, (special.second->getName().c_str()))) {
+			
+		}
+		i++;
+	}
+
+	i = 0;
+	for (const auto& food : numToItems) {
+		auto temp = std::dynamic_pointer_cast<Food>(food.second);
+		if (!temp) continue;
+		if (GuiButton(Rectangle{ float(centerWidth - 450), float(centerHeight) + i * gap - 100, 300, 40 }, (food.second->getName().c_str()))) {
+			currentMenu = MENU_EDITOR_PROCESS;
+			currentSharedPtr = food.second;
+			currentItemIndex = food.first;
+		}
+		i++;
+	}
+
+	i = 0;
+	for (const auto& drink : numToItems) {
+		auto temp = std::dynamic_pointer_cast<Drink>(drink.second);
+		if (!temp) continue;
+		if (GuiButton(Rectangle{ float(centerWidth - 100), float(centerHeight) + i * gap - 100, 300, 40 }, (drink.second->getName().c_str()))) {
+			
+		}
+		i++;
+	}
+
+	for (const auto& item : currentOrder->numToUserOrder) {
+		if (GuiButton(Rectangle{ float(centerWidth - 100), float(centerHeight) + i * gap - 100, 300, 40 }, (item.second->getName().c_str()))) {
+
+		}
+	}
+}
+
+
+
+
+
 
 void Menu::drawMenuEditor() {
-	DrawText("Please pick a item to edit", centerWidth - MeasureText("Please pick a item to edit", 58) / 2, centerHeight - 300, 58, BLACK);
+	DrawText("Please pick an item to edit", centerWidth - MeasureText("Please pick an item to edit", 58) / 2, centerHeight - 300, 58, BLACK);
 
 	DrawText("Special", centerWidth - MeasureText("Special", 40) / 2 - 550, centerHeight - 200, 40, BLACK);
 	DrawText("Meals", centerWidth - MeasureText("Meals", 40) / 2, centerHeight - 200, 40, BLACK);
@@ -84,42 +133,56 @@ void Menu::drawMenuEditor() {
 	int gap = 80;
 	int i = 0;
 	// if one of the special item is hit.
-	for (const auto & special : numToItem) {
+	for (const auto& special : numToItems) {
 		auto temp = std::dynamic_pointer_cast<Special>(special.second);
 		if (!temp) continue;
-		if (GuiButton(Rectangle{ float(centerWidth - 775), float(centerHeight) + i * gap - 100, 450, 40}, (special.second->getItemName()).c_str())) {
+		if (GuiButton(Rectangle{ float(centerWidth - 775), float(centerHeight) + i * gap - 100, 450, 40}, (special.second->getName().c_str()))) {
 			currentMenu = MENU_EDITOR_PROCESS;
 			currentSharedPtr = special.second;
+			currentItemIndex = special.first; //this is to allow removal.
 		}
 		i++;
 	}
+	// if the add new button is hit
 	if (GuiButton(Rectangle{ float(centerWidth - 700), float(centerHeight) + i * gap - 100, 300, 40 }, "Add New")) {
-
+		addItem(0);
 	}
 
 	i = 0;
-	for (const auto& food : numToItem) {
+	for (const auto& food : numToItems) {
 		auto temp = std::dynamic_pointer_cast<Food>(food.second);
 		if (!temp) continue;
-		if (GuiButton(Rectangle{ float(centerWidth - 225), float(centerHeight) + i * gap - 100, 450, 40 }, (food.second->getItemName()).c_str())) {
+		if (GuiButton(Rectangle{ float(centerWidth - 225), float(centerHeight) + i * gap - 100, 450, 40 }, (food.second->getName().c_str()))) {
 			currentMenu = MENU_EDITOR_PROCESS;
+			currentSharedPtr = food.second;
+			currentItemIndex = food.first;
 		}
 		i++;
 	}
 	if (GuiButton(Rectangle{ float(centerWidth - 150), float(centerHeight) + i * gap - 100, 300, 40 }, "Add New")) {
-
+		addItem(1);
 	}
 
 	i = 0;
-	for (const auto& drink : numToItem) {
+	for (const auto& drink : numToItems) {
 		auto temp = std::dynamic_pointer_cast<Drink>(drink.second);
 		if (!temp) continue;
-		if (GuiButton(Rectangle{ float(centerWidth + 325), float(centerHeight) + i * gap - 100, 450, 40 }, (drink.second->getItemName()).c_str())) {
+		if (GuiButton(Rectangle{ float(centerWidth + 325), float(centerHeight) + i * gap - 100, 450, 40 }, (drink.second->getName().c_str()))) {
 			currentMenu = MENU_EDITOR_PROCESS;
+			currentSharedPtr = drink.second;
+			currentItemIndex = drink.first;
 		}
 		i++;
 	}
 	if (GuiButton(Rectangle{ float(centerWidth + 400), float(centerHeight) + i * gap - 100, 300, 40 }, "Add New")) {
-
+		addItem(2);
 	}
+}
+
+void Menu::setMenuItem(std::map<int, std::shared_ptr<Item>> tempNumToItem) {
+	numToItems = tempNumToItem;
+}
+
+std::map<int, std::shared_ptr<Item>> Menu::getMenuItem() {
+	return numToItems;
 }

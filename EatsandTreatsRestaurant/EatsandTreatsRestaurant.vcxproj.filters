@@ -27,9 +27,13 @@
     <ClCompile Include="include\order.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\fileManager.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="include\menuFile.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\raygui.h">
@@ -47,5 +51,8 @@
     <ClInclude Include="include\currentmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="include\tableFile.txt" />
   </ItemGroup>
 </Project>

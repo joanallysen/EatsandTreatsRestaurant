@@ -3,10 +3,24 @@
 #include <string>
 
 
-Table::Table(unsigned int _tableNumber, unsigned int _seatingCapacity, Occupancy _condition)
-    : tableState(_condition), seatingCapacity(_seatingCapacity), tableNumber(_tableNumber) {}
+Table::Table(unsigned int _tableNumber, unsigned int _seatingCapacity, Occupancy _condition, std::string _symbol, std::shared_ptr<Order> _order)
+    : tableState(_condition), seatingCapacity(_seatingCapacity), tableNumber(_tableNumber), symbol(_symbol), order(_order) {
+    setSymbol();
+}
 
+void Table::setSymbol() {
+    if (tableState == Occupancy::AVAILABLE) {
+        symbol = "+";
+    }else if (tableState == Occupancy::OCCUPIED){
+        symbol = "x";
+    } else if (tableState == Occupancy::BOOKED) {
+        symbol = "-";
+    }
+}
 
+std::string Table::getSymbol() const {
+    return symbol;
+}
 // Get table occupancy status
 Occupancy Table::getOccupancy() const {
     return tableState;
@@ -28,20 +42,28 @@ void Table::setCapacity(unsigned int _capacity) {
     seatingCapacity = _capacity;
 }
 
+void Table::bookTable() {
+    std::cout << "bookTable" << std::endl;
+    tableState = Occupancy::BOOKED;
+    setSymbol();
+}
+
+std::shared_ptr<Order> Table::getOrderPointer() {
+    std::cout << "GETTING REFERENCEE";
+    std::cout << "DEBUG, NUMBER OF REFERENCE COUNT:" << order.use_count() << std::endl;
+    return order;
+}
+
 // number to tables map.
 std::map<int, Table> TableManager::numToTables;
 
-void TableManager::initializeTables() {
-    numToTables[0] = (Table(1, 4, Occupancy::AVAILABLE));
-    numToTables[1] = (Table(2, 2, Occupancy::AVAILABLE));
-    numToTables[2] = (Table(3, 2, Occupancy::AVAILABLE));
-    numToTables[3] = (Table(4, 2, Occupancy::AVAILABLE));
-    numToTables[4] = (Table(5, 2, Occupancy::AVAILABLE));
-    numToTables[5] = (Table(6, 3, Occupancy::AVAILABLE));
-    numToTables[6] = (Table(7, 4, Occupancy::AVAILABLE));
-    numToTables[7] = (Table(8, 4, Occupancy::AVAILABLE));
+void TableManager::setTables(std::map<int, Table> tempNumToTables) {
+    numToTables = tempNumToTables;
 }
 
+std::map<int, Table> TableManager::getTables() {
+    return numToTables;
+}
 // this function also update the current table that the user is looking.
 void TableManager::drawTable(CurrentMenu afterHittingButton) {
     int row = 3; int col = 3;
@@ -56,7 +78,7 @@ void TableManager::drawTable(CurrentMenu afterHittingButton) {
     {
         for (int j = col; j > 0; j--) {
             if (it == numToTables.end()) return;
-            if (GuiButton(Rectangle{float(centerWidth - (j * 200) + offset), float(centerHeight - i*200 + 400), 80, 80}, std::to_string(it->second.getTableNumber()).c_str())) {
+            if (GuiButton(Rectangle{float(centerWidth - (j * 200) + offset), float(centerHeight - i*200 + 400), 80, 80}, (it->second.getSymbol()).c_str())) {
                 currentTable = it->second;
                 currentTableIndex = it->first;
                 currentMenu = afterHittingButton;
@@ -93,4 +115,13 @@ void TableManager::addTable() {
 void TableManager::deleteTable() {
     std::cout << currentTableIndex << std::endl;
     numToTables.erase(currentTableIndex);
+}
+
+void TableManager::bookCurrentTable() {
+    std::cout << currentTableIndex << "booking..." << std::endl;
+    numToTables[currentTableIndex].bookTable();
+}
+
+std::shared_ptr<Order> TableManager::getCurrentTableOrderPointer() {
+    return numToTables[currentTableIndex].getOrderPointer();
 }

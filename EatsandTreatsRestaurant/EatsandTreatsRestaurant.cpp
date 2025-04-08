@@ -2,12 +2,16 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+
+#include <iomanip>
+#include <sstream>
 using namespace std;
 
 #include "raylib.h"
 #include "include\table.h"
 #include "include\menu.h"
-//#include "include\order.h"
+#include "include\fileManager.h"
+#include "include\order.h"
 #include "include\currentmenu.h"
 
 #define RAYGUI_IMPLEMENTATION
@@ -32,6 +36,12 @@ bool is_number(const string& s) {
     return !s.empty() && it == s.end();
 }
 
+std::string formatFloat(float value) {
+    std::ostringstream stream;
+    stream << std::fixed << std::setprecision(2) << value;  // Show 2 digits after the decimal
+    return stream.str();
+}
+
 
 
 bool toggleState1 = false;
@@ -40,11 +50,13 @@ bool exitOrderWindow = false;
 void orderMenu() {
     if (!exitOrderWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,900,900 }, "#198# Order Menu");
+        exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
 
         if (GuiToggle(Rectangle{ 100, 100, 200, 40 }, toggleState1 ? "ON" : "OFF", &toggleState1)) {
             toggleState1 = !toggleState1;
         }
+
+        Menu::drawMenuOrder();
     }
     else {
         exitOrderWindow = false;
@@ -57,13 +69,22 @@ void frontOfHouseProcess() {
     
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100}, "#198# Process");
+
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        DrawText("Do you want to order or book?", centerWidth - MeasureText("Do you want to order or book?", 58) / 2, centerHeight - 300, 58, BLACK);
+        Table currentTable = TableManager::getCurrentTable();
+
+        if (currentTable.getOccupancy() == Occupancy::BOOKED) {
+            DrawText("Booked!", centerWidth - MeasureText("Booked!", 28) / 2, centerHeight + 160, 28, BLACK);
+        }
+
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight, 200, 40 }, "ORDER")) {
             exitWindow = false;
             currentMenu = ORDER_MENU;
         }
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight + 100, 200, 40 }, "BOOK")) {
-
+            cout << "BOOKED" << endl;
+            TableManager::bookCurrentTable();
         }
     }
     else {
@@ -80,34 +101,95 @@ void frontOfHouse(){
     DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 24) / 2, centerHeight - 300, 24, BLACK);
 
     TableManager::drawTable(FRONT_OF_HOUSE_PROCESS);
-
 }
 
 void kitchenStaff() {
 
 }
 
+const int threeInputBox = 3;  // number of input boxes
+char threeInputs[threeInputBox][64] = { "" };  // 3 box 64 letter each
+bool editModeThree[threeInputBox] = { false }; // fill all element with false
 void menuEditorProcess() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
         exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Edit Process");
+
+        // get the current item that the user has clicked;
         shared_ptr<Item> pickedItem = Menu::getSharedPtrItem();
-        cout << pickedItem->getItemName() << endl;
+        cout << pickedItem->getName() << endl;
+
+        string itemName = pickedItem->getName();
+        string itemDescription = pickedItem->getDescription();
+        string priceText = "$" + formatFloat(pickedItem->getPrice());
+        DrawText(itemName.c_str(), centerWidth - MeasureText(itemName.c_str(), 58) / 2, centerHeight - 300, 58, BLACK);
+        DrawText(itemDescription.c_str(), centerWidth - MeasureText(itemDescription.c_str(), 28) / 2, centerHeight - 200, 28, BLACK);
+        DrawText(priceText.c_str(), centerWidth - MeasureText(priceText.c_str(), 28) / 2, centerHeight - 150, 28, BLACK);
+        DrawText("New Item Name     :", centerWidth - MeasureText("New Table Number     :", 24) / 2 - 160, centerHeight - 80, 24, BLACK);
+        DrawText("New Description   :", centerWidth - MeasureText("New Description        :", 24) / 2 - 160, centerHeight, 24, BLACK);
+        DrawText("New Price           :", centerWidth - MeasureText("New Price                :", 24) / 2 - 160, centerHeight + 80, 24, BLACK);
+
+        // I ADDED ONE MORE INPUT BOX
+        for (int i = 0; i < threeInputBox; i++) {
+            Rectangle box = { centerWidth + 180 - 150, (centerHeight+80) - (i * 80), 300, 50 };
+
+            // If clicked, toggle editing mode
+            if (GuiTextBox(box, threeInputs[i], 64, editModeThree[i])) { // make the 3 boxes with all edit mode being false, if clicked it will see what box have been clicked(j) and put it to editmode.
+                for (int j = 0; j < threeInputBox; j++) {
+                    if (i == j) {
+                        editModeThree[j] = true;
+                    }
+                    else {
+                        editModeThree[j] = false;
+                    }
+                }
+            }
+
+            if (i == 0 && IsKeyPressed(KEY_ENTER)) {//price
+                try {
+                    pickedItem->setPrice(stof(threeInputs[i]));
+                }
+                catch (const std::invalid_argument&) {
+                    cout << "The user hit an incorrect float value." << endl;
+                }
+            }
+            else if (i == 1 && IsKeyPressed(KEY_ENTER)) {//name
+                string temp(threeInputs[i]); // need to convert c string to normal std::string
+                pickedItem->setDescription(temp);
+            }
+            else if (i == 2 && IsKeyPressed(KEY_ENTER)) {// title
+                string temp(threeInputs[i]);
+                pickedItem->setName(temp);
+            }
+        }
+
+        if (GuiButton(Rectangle{ centerWidth - 550, centerHeight + 300, 200, 40 }, "DELETE")) {
+            for (int i = 0; i < threeInputBox; i++) { threeInputs[i][0] = '\0'; }
+            Menu::deleteCurrentItem();
+            currentMenu = MENU_EDITOR;
+        }
+
+        if (GuiButton(Rectangle{ centerWidth + 400, centerHeight + 300, 200, 40 }, "EXIT")) {
+            for (int i = 0; i < threeInputBox; i++) { threeInputs[i][0] = '\0'; }
+            currentMenu = MENU_EDITOR;
+        }
     }
     else {
-        exitWindow = false;
         currentMenu = MENU_EDITOR;
+        exitWindow = false;
     }
 }
+
 
 const int maxInputBox = 2;  // number of input boxes
 char inputs[maxInputBox][64] = { "" };  // 2 box 64 letter each
 bool editMode[maxInputBox] = { false }; // fill all element with false
-
 void tableEditorProcess() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
         exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Edit Process");
+
+        // get the current table that the user is on.
         Table currentTable = TableManager::getCurrentTable();
 
         string numberText = "Table number " + to_string(currentTable.getTableNumber());
@@ -284,17 +366,24 @@ void update() {
         
         EndDrawing();
     }
+    FileManager::saveMenuToFile();
+    FileManager::saveTableToFile();
+    cout << "WINDOW IS CLOSED" << endl;
     CloseWindow();
 }
 
 
 
+#include <fstream>
 int main()
 {
     // im adjusting so it is similar to unity where it used start() and update()
     //APP PREPARATION
-    TableManager::initializeTables();
-    Menu::initializeMenu();
+    cout << "aa" << endl;
+    FileManager::loadMenuItem();
+    FileManager::loadTable();
+    //return 0;
+    currentMenu = ORDER_MENU;
     InitWindow(screenWidth, screenHeight, "Eats and Treats");
     SetTargetFPS(60);
     update();
