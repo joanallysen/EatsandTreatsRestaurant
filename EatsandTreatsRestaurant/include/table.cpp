@@ -1,10 +1,11 @@
 #include "table.h"
+
 #include <iostream>
 #include <string>
 
 
-Table::Table(unsigned int _tableNumber, unsigned int _seatingCapacity, Occupancy _condition, std::string _symbol, std::shared_ptr<Order> _order)
-    : tableState(_condition), seatingCapacity(_seatingCapacity), tableNumber(_tableNumber), symbol(_symbol), order(_order) {
+Table::Table(unsigned int _tableNumber, unsigned int _seatingCapacity, Occupancy _condition, std::string _symbol)
+    : tableState(_condition), seatingCapacity(_seatingCapacity), tableNumber(_tableNumber), symbol(_symbol) {
     setSymbol();
 }
 
@@ -42,17 +43,28 @@ void Table::setCapacity(unsigned int _capacity) {
     seatingCapacity = _capacity;
 }
 
+void Table::setOccupancy(Occupancy _occupancy) {
+    tableState = _occupancy;
+    setSymbol();
+}
 void Table::bookTable() {
     std::cout << "bookTable" << std::endl;
     tableState = Occupancy::BOOKED;
     setSymbol();
 }
 
-std::shared_ptr<Order> Table::getOrderPointer() {
-    std::cout << "GETTING REFERENCEE";
-    std::cout << "DEBUG, NUMBER OF REFERENCE COUNT:" << order.use_count() << std::endl;
+// order execution
+void Table::setTableOrder(Order _order) {
+    order = _order;
+}
+
+Order Table::getTableOrder() const{
     return order;
 }
+
+
+
+
 
 // number to tables map.
 std::map<int, Table> TableManager::numToTables;
@@ -120,8 +132,33 @@ void TableManager::deleteTable() {
 void TableManager::bookCurrentTable() {
     std::cout << currentTableIndex << "booking..." << std::endl;
     numToTables[currentTableIndex].bookTable();
+    numToTables[currentTableIndex].setOccupancy(Occupancy::BOOKED);
 }
 
-std::shared_ptr<Order> TableManager::getCurrentTableOrderPointer() {
-    return numToTables[currentTableIndex].getOrderPointer();
+Occupancy TableManager::getCurrentOccupation() {
+    return numToTables[currentTableIndex].getOccupancy();
+}
+
+void TableManager::updateCurrentTableOrder(Order order) {
+    std::cout << "Adding order... table manager" << std::endl;
+    numToTables[currentTableIndex].setTableOrder(order);
+    debugCurrentTableOrder();
+    numToTables[currentTableIndex].setOccupancy(Occupancy::OCCUPIED);
+}
+
+void TableManager::debugCurrentTableOrder() {
+    std::cout << "Current Item Inside Table Index:  " << currentTableIndex << std::endl;
+    for (const auto& i : numToTables[currentTableIndex].getTableOrder().getNumToUserOrderAndAmount()) {
+        std::cout << i.second.first->getName() << " " << i.second.second << " " << std::endl;
+    }
+}
+
+Order TableManager::getCurrentTableOrder() {
+    return numToTables[currentTableIndex].getTableOrder();
+}
+
+void TableManager::serveTableOrder() {
+    numToTables[currentTableIndex].getTableOrder().addToTotalIncome();
+    numToTables[currentTableIndex].setOccupancy(Occupancy::AVAILABLE);
+    numToTables[currentTableIndex].setTableOrder(Order());
 }

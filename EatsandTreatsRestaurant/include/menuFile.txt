@@ -7,6 +7,9 @@ Mango Sticky Rice Spring Rolls&|Fresh spring rolls stuffed with sweet coconut ri
 Kimchi Fried Rice&|A flavorful fried rice made with tangy kimchi, mixed veggies, and topped with a fried egg and sesame seeds.&|16&|food
 Truffle Soy Udon&|Soft udon noodles served in a savory truffle soy broth, garnished with shiitake mushrooms, green onions, and a soft-boiled egg.&|20&|food
 Sichuan Spicy Hot Wings&|Crispy chicken wings tossed in a bold Sichuan peppercorn sauce, with a hint of garlic and chili oil.&|14&|food
-New Special&|...&|0&|special
+New Drink&|...&|0&|drink
+New Food&|...&|0&|food
+New Drink&|...&|0&|drink
+New Drink&|...&|0&|drink
 New Drink&|...&|0&|drink
 New Drink&|...&|0&|drink

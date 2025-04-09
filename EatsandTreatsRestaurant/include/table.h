@@ -23,6 +23,7 @@ Disadvatage -> Every table have to be adjusted from a different class (TableMana
 #include <map>
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 // Enum for table occupancy status
 enum class Occupancy {
@@ -39,7 +40,6 @@ extern const int screenHeight;
 extern const int centerWidth;
 extern const int centerHeight;
 
-class Order;
 // Table class
 class Table {
 private:
@@ -47,26 +47,28 @@ private:
     Occupancy tableState;
     unsigned int seatingCapacity;
     std::string symbol;
-    std::shared_ptr<Order> order;
+    Order order;
 
 
 
 public:
-    Table(unsigned int tableNumber = 1, unsigned int seatingCapacity = 1, Occupancy _condition = Occupancy::AVAILABLE, std::string _symbol = "+", std::shared_ptr<Order> _order = nullptr);
+    Table(unsigned int tableNumber = 1, unsigned int seatingCapacity = 1, Occupancy condition = Occupancy::AVAILABLE, std::string _symbol = "+");
 
     Occupancy getOccupancy() const;
     unsigned int getTableNumber() const;
     unsigned int getCapacity() const;
     std::string getSymbol() const;
-
-    std::shared_ptr<Order> getOrderPointer();
-
+    
     // Only usable by tableManager. The downside of not using pointer.
     void setSymbol();
     void setTableNumber(unsigned int _tableNumber);
     void setCapacity(unsigned int _capacity);
-    void setTableOrder(Order order);
+    void setOccupancy(Occupancy _occupancy);
     void bookTable();
+
+    // order execution;
+    void setTableOrder(Order order);
+    Order getTableOrder() const;
 };
 
 class TableManager {
@@ -76,18 +78,29 @@ private:
     static unsigned int currentTableIndex;
 
 public:
-    static Table getCurrentTable();
+    
     // for file manager.
     static void setTables(std::map<int, Table> tempNumToTables);
     static std::map<int, Table> getTables();
 
-
     static void drawTable(CurrentMenu afterHittingButton);
-    static void updateTableNumber(unsigned int newTableNumber);
-    static void updateTableCapacity(unsigned int newTableCapacity);
+    
+    // current table
+    static Table getCurrentTable();
     static void addTable();
     static void deleteTable();
+    static void updateTableNumber(unsigned int newTableNumber);
+    static void updateTableCapacity(unsigned int newTableCapacity);
     static void bookCurrentTable();
-    static std::shared_ptr<Order> getCurrentTableOrderPointer();
+    static Occupancy getCurrentOccupation();
+
+    // order execution
+    static void updateCurrentTableOrder(Order order);
+    static Order getCurrentTableOrder();
+    static void debugCurrentTableOrder();
+    static void serveTableOrder();
 };
 
+// order, what do I want to do? get the shared ptr?
+// so I can access and edit the order from outside.
+// seems tempting aint gonna lie, but this will have the same result.

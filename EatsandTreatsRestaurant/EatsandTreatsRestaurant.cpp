@@ -43,25 +43,23 @@ std::string formatFloat(float value) {
 }
 
 
-
-bool toggleState1 = false;
-bool toggleState2 = false;
 bool exitOrderWindow = false;
 void orderMenu() {
     if (!exitOrderWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
         exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
 
-        if (GuiToggle(Rectangle{ 100, 100, 200, 40 }, toggleState1 ? "ON" : "OFF", &toggleState1)) {
-            toggleState1 = !toggleState1;
+        pair<bool, Order> currentOrder = Menu::getCustomerOrder();
+        if (currentOrder.first == true) {
+            TableManager::updateCurrentTableOrder(currentOrder.second);
+            currentMenu = FRONT_OF_HOUSE;
         }
-
-        Menu::drawMenuOrder();
     }
     else {
         exitOrderWindow = false;
-        currentMenu = FRONT_OF_HOUSE;
+        currentMenu = MAIN_MENU;
     }
+
 }
 
 bool exitWindow = false;
@@ -69,14 +67,24 @@ void frontOfHouseProcess() {
     
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-
         exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
-        DrawText("Do you want to order or book?", centerWidth - MeasureText("Do you want to order or book?", 58) / 2, centerHeight - 300, 58, BLACK);
-        Table currentTable = TableManager::getCurrentTable();
-
-        if (currentTable.getOccupancy() == Occupancy::BOOKED) {
-            DrawText("Booked!", centerWidth - MeasureText("Booked!", 28) / 2, centerHeight + 160, 28, BLACK);
+        if (TableManager::getCurrentOccupation() == Occupancy::OCCUPIED) {
+            DrawText("Sorry! This table is currently occupied!", centerWidth - MeasureText("Sorry! This table is currently occupied", 58) / 2, centerHeight, 58, BLACK);
+            return;
         }
+
+        if (TableManager::getCurrentOccupation() == Occupancy::BOOKED) {
+            DrawText("Proceed with order?", centerWidth - MeasureText("Proceed with order?", 58) / 2, centerHeight - 300, 58, BLACK);
+            if (GuiButton(Rectangle{ centerWidth - 100, centerHeight, 200, 40 }, "ORDER")) {
+                exitWindow = false;
+                currentMenu = ORDER_MENU;
+            }
+            return;
+        }
+        
+        DrawText("Do you want to order or book?", centerWidth - MeasureText("Do you want to order or book?", 58) / 2, centerHeight - 300, 58, BLACK);
+
+        
 
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight, 200, 40 }, "ORDER")) {
             exitWindow = false;
@@ -85,6 +93,7 @@ void frontOfHouseProcess() {
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight + 100, 200, 40 }, "BOOK")) {
             cout << "BOOKED" << endl;
             TableManager::bookCurrentTable();
+            currentMenu = FRONT_OF_HOUSE;
         }
     }
     else {
@@ -101,12 +110,44 @@ void frontOfHouse(){
     DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 24) / 2, centerHeight - 300, 24, BLACK);
 
     TableManager::drawTable(FRONT_OF_HOUSE_PROCESS);
+
+    if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
+        currentMenu = MAIN_MENU;
+    }
 }
+
+void kitchenStaffProcess() {
+    if (!exitWindow) {
+        ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        DrawText("Customer Order", centerWidth - MeasureText("Customer Order", 58) / 2, centerHeight - 300, 58, BLACK);
+        TableManager::getCurrentTableOrder().drawCustomerOrder();
+        
+
+        if (GuiButton(Rectangle{ float(centerWidth) - 200, float(centerHeight + 425), 400, 40 }, "Serve Order")) {
+            TableManager::serveTableOrder();
+            currentMenu = KITCHEN_STAFF;
+        }
+    }
+    else {
+        exitWindow = false;
+        currentMenu = KITCHEN_STAFF;
+    }
+}
+
 
 void kitchenStaff() {
-
+    ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+    DrawText("Click one of the table to see customer order", centerWidth - MeasureText("Click one of the table to see customer order", 24) / 2, centerHeight - 300, 24, BLACK);
+    TableManager::drawTable(CurrentMenu::KITCHEN_STAFF_PROCESS);
+    if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
+        currentMenu = MAIN_MENU;
+    }
 }
 
+
+// EDITOR SECTION
 const int threeInputBox = 3;  // number of input boxes
 char threeInputs[threeInputBox][64] = { "" };  // 3 box 64 letter each
 bool editModeThree[threeInputBox] = { false }; // fill all element with false
@@ -180,7 +221,6 @@ void menuEditorProcess() {
     }
 }
 
-
 const int maxInputBox = 2;  // number of input boxes
 char inputs[maxInputBox][64] = { "" };  // 2 box 64 letter each
 bool editMode[maxInputBox] = { false }; // fill all element with false
@@ -243,8 +283,6 @@ void tableEditorProcess() {
         currentMenu = EDITOR;
     }
 }
-
-
 
 void tableEditor() {
     if (!exitWindow) {
@@ -312,7 +350,12 @@ void mainMenu() {
     if (GuiButton(Rectangle{ centerWidth - 400, centerHeight + 160, 800, 50 }, "Editor")) {
         currentMenu = EDITOR;
     }
+
+    DrawText("Total Income Today:", centerWidth - MeasureText("Total Income Today:", 30) / 2, centerHeight + 300, 30, BLACK);
+    string totalIncomeText = "$" + formatFloat(Order::getTotalIncome());
+    DrawText(totalIncomeText.c_str(), centerWidth - MeasureText(totalIncomeText.c_str(), 30) / 2, centerHeight + 340, 30, BLACK);
 }
+
 
 void update() {
     while (!WindowShouldClose())
@@ -341,6 +384,9 @@ void update() {
                 break;
             case CurrentMenu::KITCHEN_STAFF:
                 kitchenStaff();
+                break;
+            case CurrentMenu::KITCHEN_STAFF_PROCESS:
+                kitchenStaffProcess();
                 break;
             case CurrentMenu::ORDER_MENU:
                 orderMenu();
@@ -372,19 +418,19 @@ void update() {
     CloseWindow();
 }
 
-
-
-#include <fstream>
 int main()
 {
     // im adjusting so it is similar to unity where it used start() and update()
     //APP PREPARATION
     cout << "aa" << endl;
+    
+    //return 0;
     FileManager::loadMenuItem();
     FileManager::loadTable();
     //return 0;
-    currentMenu = ORDER_MENU;
+    currentMenu = MAIN_MENU;
     InitWindow(screenWidth, screenHeight, "Eats and Treats");
+    GuiLoadStyle("styles.rgs");
     SetTargetFPS(60);
     update();
 

@@ -30,6 +30,9 @@
     <ClCompile Include="include\fileManager.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="include\item.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -49,6 +52,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\currentmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
