@@ -7,9 +7,8 @@ Mango Sticky Rice Spring Rolls&|Fresh spring rolls stuffed with sweet coconut ri
 Kimchi Fried Rice&|A flavorful fried rice made with tangy kimchi, mixed veggies, and topped with a fried egg and sesame seeds.&|16&|food
 Truffle Soy Udon&|Soft udon noodles served in a savory truffle soy broth, garnished with shiitake mushrooms, green onions, and a soft-boiled egg.&|20&|food
 Sichuan Spicy Hot Wings&|Crispy chicken wings tossed in a bold Sichuan peppercorn sauce, with a hint of garlic and chili oil.&|14&|food
-New Drink&|...&|0&|drink
-New Food&|...&|0&|food
-New Drink&|...&|0&|drink
-New Drink&|...&|0&|drink
-New Drink&|...&|0&|drink
-New Drink&|...&|0&|drink
+Chicken&|Delicious chicken spice flavor&|15&|food
+Yuzu Matcha Fizz&|A refreshing sparkling drink made with earthy matcha, tangy yuzu citrus, and a hint of honey, served over ice.&|8&|drink
+Lychee Ginger Cooler&|A chilled lychee juice blend with ginger syrup, soda water, and a sprig of mint for a lightly sweet and spicy twist.&|7&|drink
+Spiced Plum Iced Tea&|House-brewed black tea infused with spiced plum syrup, served over crushed ice and garnished with a dried plum slice.&|6&|drink
+Calamansi Honey Sparkler&|A zesty and bubbly fusion of calamansi juice and honey syrup, topped with soda water and a twist of lime.&|7&|drink

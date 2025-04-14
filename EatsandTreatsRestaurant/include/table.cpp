@@ -22,7 +22,7 @@ void Table::setSymbol() {
 std::string Table::getSymbol() const {
     return symbol;
 }
-// Get table occupancy status
+
 Occupancy Table::getOccupancy() const {
     return tableState;
 }
@@ -64,8 +64,6 @@ Order Table::getTableOrder() const{
 
 
 
-
-
 // number to tables map.
 std::map<int, Table> TableManager::numToTables;
 
@@ -103,7 +101,7 @@ Table TableManager::currentTable = -1;
 unsigned int TableManager::currentTableIndex = -1;
 
 // return the table that user is looking on.
-Table TableManager::getCurrentTable() { // return current Table that user want to see the info of
+Table TableManager::getCurrentTable() { // mostly used only for text, because this can't be modified outside of scope
     return numToTables[currentTableIndex];
 }
 
@@ -159,6 +157,7 @@ Order TableManager::getCurrentTableOrder() {
 
 void TableManager::serveTableOrder() {
     numToTables[currentTableIndex].getTableOrder().addToTotalIncome();
+    numToTables[currentTableIndex].getTableOrder().saveMostItemOrdered(numToTables[currentTableIndex].getTableOrder());
     numToTables[currentTableIndex].setOccupancy(Occupancy::AVAILABLE);
     numToTables[currentTableIndex].setTableOrder(Order());
 }

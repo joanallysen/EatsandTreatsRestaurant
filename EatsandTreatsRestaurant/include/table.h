@@ -25,14 +25,14 @@ Disadvatage -> Every table have to be adjusted from a different class (TableMana
 #include <memory>
 #include <unordered_map>
 
-// Enum for table occupancy status
+// enum for table occupancy status
 enum class Occupancy {
     AVAILABLE,
     OCCUPIED,
     BOOKED
 };
 
-// Extern declaration of currentMenu
+// extern declaration of currentMenu
 extern CurrentMenu currentMenu;
 
 extern const int screenWidth;
@@ -49,8 +49,6 @@ private:
     std::string symbol;
     Order order;
 
-
-
 public:
     Table(unsigned int tableNumber = 1, unsigned int seatingCapacity = 1, Occupancy condition = Occupancy::AVAILABLE, std::string _symbol = "+");
 
@@ -59,14 +57,14 @@ public:
     unsigned int getCapacity() const;
     std::string getSymbol() const;
     
-    // Only usable by tableManager. The downside of not using pointer.
+    // only usable by tableManager. One of the downside of not using pointer.
     void setSymbol();
     void setTableNumber(unsigned int _tableNumber);
     void setCapacity(unsigned int _capacity);
     void setOccupancy(Occupancy _occupancy);
     void bookTable();
 
-    // order execution;
+    // order execution.
     void setTableOrder(Order order);
     Order getTableOrder() const;
 };
@@ -85,7 +83,7 @@ public:
 
     static void drawTable(CurrentMenu afterHittingButton);
     
-    // current table
+    // current table editing method
     static Table getCurrentTable();
     static void addTable();
     static void deleteTable();
@@ -100,7 +98,3 @@ public:
     static void debugCurrentTableOrder();
     static void serveTableOrder();
 };
-
-// order, what do I want to do? get the shared ptr?
-// so I can access and edit the order from outside.
-// seems tempting aint gonna lie, but this will have the same result.

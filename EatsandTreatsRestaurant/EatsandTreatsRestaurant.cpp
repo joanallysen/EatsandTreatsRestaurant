@@ -3,8 +3,6 @@
 #include <unordered_map>
 #include <string>
 
-#include <iomanip>
-#include <sstream>
 using namespace std;
 
 #include "raylib.h"
@@ -13,6 +11,7 @@ using namespace std;
 #include "include\fileManager.h"
 #include "include\order.h"
 #include "include\currentmenu.h"
+#include "include\simpleUtil.h"
 
 #define RAYGUI_IMPLEMENTATION
 #include "include\raygui.h"
@@ -28,20 +27,6 @@ const int tableOffsetWidth = 200;
 
 CurrentMenu currentMenu = MAIN_MENU;
 
-bool is_number(const string& s) {
-    string::const_iterator it = s.begin();
-    while (it != s.end() && isdigit(*it)) {
-        it++;
-    }
-    return !s.empty() && it == s.end();
-}
-
-std::string formatFloat(float value) {
-    std::ostringstream stream;
-    stream << std::fixed << std::setprecision(2) << value;  // Show 2 digits after the decimal
-    return stream.str();
-}
-
 
 bool exitOrderWindow = false;
 void orderMenu() {
@@ -49,7 +34,7 @@ void orderMenu() {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
         exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
 
-        pair<bool, Order> currentOrder = Menu::getCustomerOrder();
+        pair<bool, Order> currentOrder = Menu::drawCustomerOrderingSystem();
         if (currentOrder.first == true) {
             TableManager::updateCurrentTableOrder(currentOrder.second);
             currentMenu = FRONT_OF_HOUSE;
@@ -107,7 +92,7 @@ void frontOfHouse(){
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
     GuiSetStyle(BUTTON, RAYGUI_MESSAGEBOX_BUTTON_HEIGHT, 400);
 
-    DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 24) / 2, centerHeight - 300, 24, BLACK);
+    DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 48) / 2, centerHeight - 300, 48, BLACK);
 
     TableManager::drawTable(FRONT_OF_HOUSE_PROCESS);
 
@@ -139,7 +124,7 @@ void kitchenStaffProcess() {
 
 void kitchenStaff() {
     ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-    DrawText("Click one of the table to see customer order", centerWidth - MeasureText("Click one of the table to see customer order", 24) / 2, centerHeight - 300, 24, BLACK);
+    DrawText("Click one of the table to see customer order", centerWidth - MeasureText("Click one of the table to see customer order", 48) / 2, centerHeight - 300, 48, BLACK);
     TableManager::drawTable(CurrentMenu::KITCHEN_STAFF_PROCESS);
     if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
         currentMenu = MAIN_MENU;
@@ -160,9 +145,9 @@ void menuEditorProcess() {
         shared_ptr<Item> pickedItem = Menu::getSharedPtrItem();
         cout << pickedItem->getName() << endl;
 
-        string itemName = pickedItem->getName();
+        string itemName = pickedItem->getName(); 
         string itemDescription = pickedItem->getDescription();
-        string priceText = "$" + formatFloat(pickedItem->getPrice());
+        string priceText = "$" + Util::formatFloat(pickedItem->getPrice());
         DrawText(itemName.c_str(), centerWidth - MeasureText(itemName.c_str(), 58) / 2, centerHeight - 300, 58, BLACK);
         DrawText(itemDescription.c_str(), centerWidth - MeasureText(itemDescription.c_str(), 28) / 2, centerHeight - 200, 28, BLACK);
         DrawText(priceText.c_str(), centerWidth - MeasureText(priceText.c_str(), 28) / 2, centerHeight - 150, 28, BLACK);
@@ -337,7 +322,9 @@ void mainMenu() {
     ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
 
-    DrawText("Eats and Treats", centerWidth - MeasureText("Eats and Treats", 58) / 2, centerHeight - 300, 58, BLACK);
+    DrawText("Eats and Treats", centerWidth - MeasureText("Eats and Treats", 64) / 2, centerHeight - 300, 64, BLACK);
+    DrawText("Authentic Asian Cuisine", centerWidth - MeasureText("Authentic Asian Cuisine", 32) / 2, centerHeight - 200, 32, BLACK);
+
     if (GuiButton(Rectangle{ centerWidth - 400, centerHeight + 80, 800, 50 }, "Front Of House")) {
         currentMenu = FRONT_OF_HOUSE;
     }
@@ -351,9 +338,28 @@ void mainMenu() {
         currentMenu = EDITOR;
     }
 
-    DrawText("Total Income Today:", centerWidth - MeasureText("Total Income Today:", 30) / 2, centerHeight + 300, 30, BLACK);
-    string totalIncomeText = "$" + formatFloat(Order::getTotalIncome());
-    DrawText(totalIncomeText.c_str(), centerWidth - MeasureText(totalIncomeText.c_str(), 30) / 2, centerHeight + 340, 30, BLACK);
+    if (GuiButton(Rectangle{ centerWidth - 300, centerHeight + 240, 600, 50 }, "Generate Today Report")) {
+        currentMenu = REPORT;
+    }
+
+    DrawText("Total Income Today:", centerWidth - MeasureText("Total Income Today:", 30) / 2, centerHeight + 400, 30, BLACK);
+    string totalIncomeText = "$" + Util::formatFloat(Order::getTotalIncome());
+    DrawText(totalIncomeText.c_str(), centerWidth - MeasureText(totalIncomeText.c_str(), 30) / 2, centerHeight + 440, 30, BLACK);
+}
+
+void report() {
+    ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
+    if (Order::getTotalIncome() == 0) {
+        DrawText("No Order Yet!", centerWidth - MeasureText("No Order Yet!", 58) / 2, centerHeight, 58, BLACK);
+    }
+    else {
+        DrawText("Today Report", centerWidth - MeasureText("Today Report", 58) / 2, centerHeight - 500, 58, BLACK);
+        Order::drawAllOrder();
+    }
+
+    if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
+        currentMenu = MAIN_MENU;
+    }
 }
 
 
@@ -375,6 +381,9 @@ void update() {
         switch (currentMenu) {
             case CurrentMenu::MAIN_MENU:
                 mainMenu();
+                break;
+            case CurrentMenu::REPORT:
+                report();
                 break;
             case CurrentMenu::FRONT_OF_HOUSE:
                 frontOfHouse();

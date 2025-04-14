@@ -135,6 +135,7 @@
     <ClCompile Include="include\table.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="include\ClassDiagram.cd" />
     <None Include="include\menuFile.txt" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -144,6 +145,7 @@
     <ClInclude Include="include\menu.h" />
     <ClInclude Include="include\order.h" />
     <ClInclude Include="include\raygui.h" />
+    <ClInclude Include="include\simpleUtil.h" />
     <ClInclude Include="include\table.h" />
   </ItemGroup>
   <ItemGroup>

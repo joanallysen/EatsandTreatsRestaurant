@@ -18,7 +18,6 @@ std::shared_ptr<Item> Menu::getSharedPtrItem() {
 // And also not readable and also du to time constraint, I'm just gonna use int.
 // (Special, 0), (Food, 1), (Drink, 2)
 void Menu::addItem(int type) {
-	// check if there's any item
 	if (numToItems.empty()) return;
 
 	std::shared_ptr<Item> newItem;
@@ -34,14 +33,16 @@ void Menu::addItem(int type) {
 		break;
 	}
 
-	numToItems[numToItems.rbegin()->first + 1] = newItem; // reason why I use this is after deletion is not truly gone. The index is skipped
+	// deletion is not removing, just empty the element. The container still exist
+	numToItems[numToItems.rbegin()->first + 1] = newItem; 
 }
 void Menu::deleteCurrentItem() {
 	numToItems.erase(currentItemIndex);
 }
 
 Order Menu::currentOrder = {};
-std::pair<bool, Order> Menu::getCustomerOrder() {
+char inputData[64] = { "" };
+std::pair<bool, Order> Menu::drawCustomerOrderingSystem() {
 	DrawText("Please pick an item to order", centerWidth - MeasureText("Please click an item to order", 58) / 2, centerHeight - 300, 58, BLACK);
 
 	DrawText("Special", centerWidth - MeasureText("Special", 40) / 2 - 650, centerHeight - 200, 40, BLACK);
@@ -96,19 +97,23 @@ std::pair<bool, Order> Menu::getCustomerOrder() {
 		i++;
 	}
 
+	// Special Description
+	DrawText("Special Request", centerWidth - MeasureText("Special Request", 20) / 2 + 400, centerHeight + i*gap - 100, 20, BLACK);
+	if (GuiTextBox(Rectangle{ float(centerWidth + 300), float(centerHeight) + i * gap - 80, 590, 40 }, inputData, 64, true)) {}
+
 	// SUBMIT BUTTON
 	if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "SUBMIT")) {
+		currentOrder.setSpecialRequest(inputData);
+		for (int i = 0; i < sizeof(inputData); i++){
+			inputData[i] = '\0';
+		}
+		std::cout << currentOrder.getSpecialRequest();
 		Order tempCurrentOrder = currentOrder;
 		currentOrder = {};
 		return { true, tempCurrentOrder };
 	}
 	return { false, Order() };
 }
-
-
-
-
-
 
 void Menu::drawMenuEditor() {
 	DrawText("Please pick an item to edit", centerWidth - MeasureText("Please pick an item to edit", 58) / 2, centerHeight - 300, 58, BLACK);

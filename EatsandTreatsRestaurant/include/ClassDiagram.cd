@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Drink">
+    <Position X="7.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileManager">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAIAAAAAAAIAAAAAAAAAABAI=</HashCode>
+      <FileName>include\fileManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Food">
+    <Position X="8.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>include\item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Item" Collapsed="true">
+    <Position X="8.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAgAAIAIACAARAEAAAEAABAAAAEAAAAAAA=</HashCode>
+      <FileName>include\item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Menu">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABABABAAAAAAAAiAAABCAAYAAAAAEgABAAAAAAA=</HashCode>
+      <FileName>include\menu.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Order">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGCAAAAAAAgAQAhAAAAAAAAACAJAEAAEAAAAAAAAQJA=</HashCode>
+      <FileName>include\order.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Special">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Table">
+    <Position X="5.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIgABJACAAAAAAIAAASACCAAQAEAAAAAAAAQBAAAY=</HashCode>
+      <FileName>include\table.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TableManager">
+    <Position X="3.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBAAAERggCAKAAAAAAAAgAAAAAAECIAAAAAgAAIIAAA=</HashCode>
+      <FileName>include\table.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Util">
+    <Position X="8.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>include\simpleUtil.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="CurrentMenu">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIQAAAAAEAIACAAAAAABAAAAAAAIAKAAAQUABAAAAA=</HashCode>
+      <FileName>include\currentmenu.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Occupancy">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAgAAAAAEAAAAAAA=</HashCode>
+      <FileName>include\table.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

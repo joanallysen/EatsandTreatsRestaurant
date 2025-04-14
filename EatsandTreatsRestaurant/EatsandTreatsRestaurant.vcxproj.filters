@@ -37,6 +37,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="include\menuFile.txt" />
+    <None Include="include\ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\raygui.h">
@@ -55,6 +56,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\item.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\simpleUtil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

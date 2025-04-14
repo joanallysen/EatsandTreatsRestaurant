@@ -1,12 +1,12 @@
 #pragma once
-#include <unordered_map>
 #include <string>
+#include <vector>
 #include <memory>
 #include <map>
 #include "item.h"
 #include "raygui.h"
 #include "raylib.h"
-#include <unordered_map>
+#include "simpleUtil.h"
 
 extern const int screenWidth;
 extern const int screenHeight;
@@ -17,17 +17,29 @@ class Order {
 private:
     std::string specialRequest;
     static float totalIncome;
-    static std::unordered_map<std::shared_ptr<Item>, int> itemToAmountOrdered;
+    // key to {item object, amount}
+    std::map<int, std::pair<std::shared_ptr<Item>, int>> numToUserOrderAndAmount;
+    // item name to {item object, amount}
+    static std::map<std::string, std::pair<std::shared_ptr<Item>, int>> itemToAmountOrdered;
 
 public:
-    std::map<int, std::pair<std::shared_ptr<Item>, int>> numToUserOrderAndAmount;
+    // similar to setter
     void addOrder(std::shared_ptr<Item> item);
     void reduceOrder(std::shared_ptr<Item> item);
-    std::map<int, std::pair<std::shared_ptr<Item>, int>> getNumToUserOrderAndAmount() const;
-    void drawCustomerOrder();
     void addToTotalIncome();
+    void setSpecialRequest(std::string _specialRequest);
+    static void saveMostItemOrdered(Order order);
+
+    std::map<int, std::pair<std::shared_ptr<Item>, int>> getNumToUserOrderAndAmount() const;
+
+    // raygui related method
+    void drawCustomerOrder();
+    static void drawAllOrder();
 
 
+    // getter
+    static std::string getMostOrderedItem();
+    std::string getSpecialRequest();
     static float getTotalIncome();
-    static float saveMostItemOrdered();
+    
 };

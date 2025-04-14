@@ -1,5 +1,5 @@
-// This file is inspired by Raygui which don't have header and just go with it.
-
+// This file is inspired by Raygui which don't have c++ and just go with it.
+// unfortunately, I haven't saved the Order. Saving an object require json for modification.
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -104,7 +104,7 @@ public:
 		ofstream menuFile("include/menuFile.txt");
 		if (!menuFile) {
 			cerr << "Failed to open file for writing!\n";
-			return; // or handle error
+			return; // or handle errors
 		}
 		map<int, shared_ptr<Item>> tempNumToItems = Menu::getMenuItem();
 		
