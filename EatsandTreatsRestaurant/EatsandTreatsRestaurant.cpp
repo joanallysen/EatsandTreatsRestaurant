@@ -92,7 +92,9 @@ void frontOfHouse(){
     GuiSetStyle(DEFAULT, TEXT_SIZE, 30);
     GuiSetStyle(BUTTON, RAYGUI_MESSAGEBOX_BUTTON_HEIGHT, 400);
 
-    DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 48) / 2, centerHeight - 300, 48, BLACK);
+    DrawText("Click one of the table to assign or book seat to new customer", centerWidth - MeasureText("Click one of the table to assign or book seat to new customer", 48) / 2, centerHeight - 400, 48, BLACK);
+    string tableOccupancyText = "Occupied Table : " + to_string(TableManager::getNumberOfOccupiedTable()) + "/" + to_string(TableManager::getTotalTable());
+    DrawText(tableOccupancyText.c_str(), centerWidth - MeasureText(tableOccupancyText.c_str(), 28) / 2, centerHeight - 280, 28, BLACK);
 
     TableManager::drawTable(FRONT_OF_HOUSE_PROCESS);
 
@@ -124,7 +126,9 @@ void kitchenStaffProcess() {
 
 void kitchenStaff() {
     ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-    DrawText("Click one of the table to see customer order", centerWidth - MeasureText("Click one of the table to see customer order", 48) / 2, centerHeight - 300, 48, BLACK);
+    DrawText("Click one of the table to see customer order", centerWidth - MeasureText("Click one of the table to see customer order", 48) / 2, centerHeight - 400, 48, BLACK);
+    string tableOccupancyText = "Occupied Table : " + to_string(TableManager::getNumberOfOccupiedTable()) + "/" + to_string(TableManager::getTotalTable());
+    DrawText(tableOccupancyText.c_str(), centerWidth - MeasureText(tableOccupancyText.c_str(), 28) / 2, centerHeight - 280, 28, BLACK);
     TableManager::drawTable(CurrentMenu::KITCHEN_STAFF_PROCESS);
     if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
         currentMenu = MAIN_MENU;
@@ -354,7 +358,7 @@ void report() {
     }
     else {
         DrawText("Today Report", centerWidth - MeasureText("Today Report", 58) / 2, centerHeight - 500, 58, BLACK);
-        Order::drawAllOrder();
+        Order::drawAllOrderReport();
     }
 
     if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "EXIT")) {
@@ -431,8 +435,6 @@ int main()
 {
     // im adjusting so it is similar to unity where it used start() and update()
     //APP PREPARATION
-    cout << "aa" << endl;
-    
     //return 0;
     FileManager::loadMenuItem();
     FileManager::loadTable();

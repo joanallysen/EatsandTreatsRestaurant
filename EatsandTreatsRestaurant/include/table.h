@@ -97,4 +97,8 @@ public:
     static Order getCurrentTableOrder();
     static void debugCurrentTableOrder();
     static void serveTableOrder();
+
+    // for general info display
+    static int getNumberOfOccupiedTable();
+    static int getTotalTable();
 };

@@ -51,7 +51,7 @@ void Order::drawCustomerOrder() {
 	GuiLabel(Rectangle{ float(centerWidth - 350), float(centerHeight) + i * gap - 150, 450, 40 }, (specialRequest).c_str());
 }
 
-void Order::drawAllOrder() {
+void Order::drawAllOrderReport() {
 	// col offset
 	int col1 = -650; int col2 = -150; int col3 = 200; int col4 = 500;
 	int gap = 60;
@@ -77,7 +77,8 @@ void Order::drawAllOrder() {
 		todayPriceText = "$" + Util::formatFloat(todayTotalPrice);
 		i++;
 	}
-	i += 2;
+
+	i++;
 	GuiLabel(Rectangle{ float(centerWidth + col1), float(centerHeight) + i * gap - 400, 450, 40 }, ("Total Income : "));
 	GuiLabel(Rectangle{ float(centerWidth + col4), float(centerHeight) + i * gap - 400, 450, 40 }, (todayPriceText.c_str()));
 

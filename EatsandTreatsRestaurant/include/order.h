@@ -15,8 +15,8 @@ extern const int centerHeight;
 
 class Order {
 private:
-    std::string specialRequest;
     static float totalIncome;
+    std::string specialRequest;
     // key to {item object, amount}
     std::map<int, std::pair<std::shared_ptr<Item>, int>> numToUserOrderAndAmount;
     // item name to {item object, amount}
@@ -34,7 +34,7 @@ public:
 
     // raygui related method
     void drawCustomerOrder();
-    static void drawAllOrder();
+    static void drawAllOrderReport();
 
 
     // getter

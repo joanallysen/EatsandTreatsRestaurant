@@ -136,3 +136,6 @@ public:
 		tableFile.close();
 	}
 };
+
+// json. 
+// table [1]{} table[2]{} menu[]{}[]{}[]{}

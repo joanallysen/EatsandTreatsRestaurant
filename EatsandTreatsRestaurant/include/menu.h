@@ -25,7 +25,6 @@ private:
 	static std::shared_ptr<Item> currentSharedPtr;
     static int currentItemIndex;
 	static std::map<int, std::shared_ptr<Item>> numToItems; // shared between all menu
-	float totalPrice;
 
 
 	static Order currentOrder;

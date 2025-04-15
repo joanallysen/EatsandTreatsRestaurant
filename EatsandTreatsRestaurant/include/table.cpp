@@ -161,3 +161,17 @@ void TableManager::serveTableOrder() {
     numToTables[currentTableIndex].setOccupancy(Occupancy::AVAILABLE);
     numToTables[currentTableIndex].setTableOrder(Order());
 }
+
+int TableManager::getNumberOfOccupiedTable() {
+    int numOfOccupied = 0;
+    for (const auto& table : numToTables) {
+        if (table.second.getOccupancy() == Occupancy::OCCUPIED) {
+            numOfOccupied += 1;
+        }
+    }
+    return numOfOccupied;
+}
+
+int TableManager::getTotalTable() {
+    return numToTables.size();
+}
