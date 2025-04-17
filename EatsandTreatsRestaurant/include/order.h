@@ -18,18 +18,21 @@ private:
     static float totalIncome;
     std::string specialRequest;
     // key to {item object, amount}
+    // items and amount ordered
     std::map<int, std::pair<std::shared_ptr<Item>, int>> numToUserOrderAndAmount;
     // item name to {item object, amount}
+    // all item and the amount ordered
     static std::map<std::string, std::pair<std::shared_ptr<Item>, int>> itemToAmountOrdered;
 
 public:
-    // similar to setter
+    // setter
     void addOrder(std::shared_ptr<Item> item);
     void reduceOrder(std::shared_ptr<Item> item);
     void addToTotalIncome();
     void setSpecialRequest(std::string _specialRequest);
     static void saveMostItemOrdered(Order order);
 
+    // get user and the amount
     std::map<int, std::pair<std::shared_ptr<Item>, int>> getNumToUserOrderAndAmount() const;
 
     // raygui related method

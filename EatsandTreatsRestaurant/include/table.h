@@ -52,19 +52,20 @@ private:
 public:
     Table(unsigned int tableNumber = 1, unsigned int seatingCapacity = 1, Occupancy condition = Occupancy::AVAILABLE, std::string _symbol = "+");
 
+    // getter
     Occupancy getOccupancy() const;
     unsigned int getTableNumber() const;
     unsigned int getCapacity() const;
     std::string getSymbol() const;
     
-    // only usable by tableManager. One of the downside of not using pointer.
+    // setter, best if only used by TableManager class
     void setSymbol();
     void setTableNumber(unsigned int _tableNumber);
     void setCapacity(unsigned int _capacity);
     void setOccupancy(Occupancy _occupancy);
     void bookTable();
 
-    // order execution.
+    // order specific method
     void setTableOrder(Order order);
     Order getTableOrder() const;
 };
@@ -77,28 +78,36 @@ private:
 
 public:
     
-    // for file manager.
-    static void setTables(std::map<int, Table> tempNumToTables);
+    // specific to file manager.
+    // get current table
     static std::map<int, Table> getTables();
+    // initialize tables
+    static void setTables(std::map<int, Table> tempNumToTables);
 
+    // display table GUI
     static void drawTable(CurrentMenu afterHittingButton);
     
-    // current table editing method
+    // curren table getter
     static Table getCurrentTable();
+    static Occupancy getCurrentOccupation();
+
+    // current table setter
     static void addTable();
     static void deleteTable();
     static void updateTableNumber(unsigned int newTableNumber);
     static void updateTableCapacity(unsigned int newTableCapacity);
     static void bookCurrentTable();
-    static Occupancy getCurrentOccupation();
 
-    // order execution
+    // order specific method
+    // order setter
     static void updateCurrentTableOrder(Order order);
-    static Order getCurrentTableOrder();
     static void debugCurrentTableOrder();
     static void serveTableOrder();
 
-    // for general info display
+    // order getter
+    static Order getCurrentTableOrder();
+
+    // general info getter
     static int getNumberOfOccupiedTable();
     static int getTotalTable();
 };

@@ -3,12 +3,13 @@ Sushi Burrito Supreme&|A giant sushi roll turned into a burrito with fresh salmo
 Crispy Tempura Avocado Toast&|A crunchy tempura-fried avocado slice served on a toasted brioche with a soy sauce drizzle and sesame seeds.&|14&|special
 Korean BBQ Beef Wellington&|A twist on the classic Beef Wellington, using tender Korean BBQ marinated beef wrapped in puff pastry with a kimchi aioli.&|28&|special
 Tandoori Chicken Bao Buns&|Soft bao buns filled with tender, tandoori-spiced chicken, topped with cucumber ribbons, and drizzled with raita.&|16&|special
-Mango Sticky Rice Spring Rolls&|Fresh spring rolls stuffed with sweet coconut rice and mango slices, served with a side of condensed milk for dipping.&|12&|food
 Kimchi Fried Rice&|A flavorful fried rice made with tangy kimchi, mixed veggies, and topped with a fried egg and sesame seeds.&|16&|food
 Truffle Soy Udon&|Soft udon noodles served in a savory truffle soy broth, garnished with shiitake mushrooms, green onions, and a soft-boiled egg.&|20&|food
 Sichuan Spicy Hot Wings&|Crispy chicken wings tossed in a bold Sichuan peppercorn sauce, with a hint of garlic and chili oil.&|14&|food
-Chicken&|Delicious chicken spice flavor&|15&|food
 Yuzu Matcha Fizz&|A refreshing sparkling drink made with earthy matcha, tangy yuzu citrus, and a hint of honey, served over ice.&|8&|drink
 Lychee Ginger Cooler&|A chilled lychee juice blend with ginger syrup, soda water, and a sprig of mint for a lightly sweet and spicy twist.&|7&|drink
 Spiced Plum Iced Tea&|House-brewed black tea infused with spiced plum syrup, served over crushed ice and garnished with a dried plum slice.&|6&|drink
 Calamansi Honey Sparkler&|A zesty and bubbly fusion of calamansi juice and honey syrup, topped with soda water and a twist of lime.&|7&|drink
+Fanta&|Spirit Red Energy Drink&|4&|drink
+Spicy Spaghetti&|Spaghetti but spicy?&|50&|food
+Cupcake&|Delicious desert&|2&|food

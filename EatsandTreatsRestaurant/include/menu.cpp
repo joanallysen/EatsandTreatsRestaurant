@@ -46,13 +46,14 @@ std::pair<bool, Order> Menu::drawCustomerOrderingSystem() {
 	DrawText("Please pick an item to order", centerWidth - MeasureText("Please click an item to order", 58) / 2, centerHeight - 300, 58, BLACK);
 
 	DrawText("Special", centerWidth - MeasureText("Special", 40) / 2 - 650, centerHeight - 200, 40, BLACK);
-	DrawText("Meals", centerWidth - MeasureText("Meals", 40) / 2 - 300, centerHeight - 200, 40, BLACK);
+	DrawText("Foods", centerWidth - MeasureText("Foods", 40) / 2 - 300, centerHeight - 200, 40, BLACK);
 	DrawText("Drinks", centerWidth - MeasureText("Drinks", 40) / 2 + 50, centerHeight - 200, 40, BLACK);
 	DrawText("Customer Order", centerWidth - MeasureText("Customer Order", 40) / 2 + 600, centerHeight - 200, 40, BLACK);
 
 	int gap = 50;
 	int i = 0;
 	
+	// items gui
 	for (const auto& special : numToItems) {
 		auto temp = std::dynamic_pointer_cast<Special>(special.second);
 		if (!temp) continue;
@@ -83,9 +84,8 @@ std::pair<bool, Order> Menu::drawCustomerOrderingSystem() {
 	}
 	
 	i = 0;
+	// current customer order gui
 	for (auto& item : currentOrder.getNumToUserOrderAndAmount()) {
-		// the actual order
-
 		GuiLabel(Rectangle{ float(centerWidth + 300), float(centerHeight) + i * gap - 100, 600, 40 }, (item.second.first->getName().c_str()));
 		if (GuiButton(Rectangle{ float(centerWidth + 850), float(centerHeight) + i * gap - 100, 40, 40 }, "+")) {
 			currentOrder.addOrder(item.second.first);
@@ -97,11 +97,11 @@ std::pair<bool, Order> Menu::drawCustomerOrderingSystem() {
 		i++;
 	}
 
-	// Special Description
+	// special request gui
 	DrawText("Special Request", centerWidth - MeasureText("Special Request", 20) / 2 + 400, centerHeight + i*gap - 100, 20, BLACK);
 	if (GuiTextBox(Rectangle{ float(centerWidth + 300), float(centerHeight) + i * gap - 80, 590, 40 }, inputData, 64, true)) {}
 
-	// SUBMIT BUTTON
+	// submit button gui
 	if (GuiButton(Rectangle{ float(centerWidth + 675), float(centerHeight + 425), 200, 40 }, "SUBMIT")) {
 		currentOrder.setSpecialRequest(inputData);
 		for (int i = 0; i < sizeof(inputData); i++){
@@ -119,7 +119,7 @@ void Menu::drawMenuEditor() {
 	DrawText("Please pick an item to edit", centerWidth - MeasureText("Please pick an item to edit", 58) / 2, centerHeight - 300, 58, BLACK);
 
 	DrawText("Special", centerWidth - MeasureText("Special", 40) / 2 - 550, centerHeight - 200, 40, BLACK);
-	DrawText("Meals", centerWidth - MeasureText("Meals", 40) / 2, centerHeight - 200, 40, BLACK);
+	DrawText("Foods", centerWidth - MeasureText("Foods", 40) / 2, centerHeight - 200, 40, BLACK);
 	DrawText("Drinks", centerWidth - MeasureText("Drinks", 40) / 2 + 550, centerHeight - 200, 40, BLACK);
 
 	int gap = 80;

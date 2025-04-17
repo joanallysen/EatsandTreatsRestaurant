@@ -30,12 +30,17 @@ CurrentMenu currentMenu = MAIN_MENU;
 
 bool exitOrderWindow = false;
 void orderMenu() {
+    // open a new menu window
     if (!exitOrderWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        exitOrderWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Order Process");
 
+        // drawTheCustomerOrderingSystem return a bool and Order pair
+        // true = user has hit Submit, false = user is still editing
+        // Order is the submitted order, return empty Order if user has not hit submit.
         pair<bool, Order> currentOrder = Menu::drawCustomerOrderingSystem();
         if (currentOrder.first == true) {
+            // tableManager will then get the current table that user is in and update the order accordingly
             TableManager::updateCurrentTableOrder(currentOrder.second);
             currentMenu = FRONT_OF_HOUSE;
         }
@@ -44,7 +49,6 @@ void orderMenu() {
         exitOrderWindow = false;
         currentMenu = MAIN_MENU;
     }
-
 }
 
 bool exitWindow = false;
@@ -52,7 +56,7 @@ void frontOfHouseProcess() {
     
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Front Of Process Menu");
         if (TableManager::getCurrentOccupation() == Occupancy::OCCUPIED) {
             DrawText("Sorry! This table is currently occupied!", centerWidth - MeasureText("Sorry! This table is currently occupied", 58) / 2, centerHeight, 58, BLACK);
             return;
@@ -105,10 +109,14 @@ void frontOfHouse(){
 
 void kitchenStaffProcess() {
     if (!exitWindow) {
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Kitchen Staff Process Menu");
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
-        DrawText("Customer Order", centerWidth - MeasureText("Customer Order", 58) / 2, centerHeight - 300, 58, BLACK);
+        if (TableManager::getCurrentOccupation() == Occupancy::AVAILABLE || TableManager::getCurrentOccupation() == Occupancy::BOOKED) {
+            DrawText("Sorry! This table has not ordered yet!", centerWidth - MeasureText("Sorry! This table has not ordered yet!", 58) / 2, centerHeight, 58, BLACK);
+            return;
+        }
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Kitchen Staff Process");
+        DrawText("Customer Order", centerWidth - MeasureText("Customer Order", 58) / 2, centerHeight - 400, 58, BLACK);
         TableManager::getCurrentTableOrder().drawCustomerOrder();
         
 
@@ -143,7 +151,7 @@ bool editModeThree[threeInputBox] = { false }; // fill all element with false
 void menuEditorProcess() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Table Edit Process");
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Menu Edit Process");
 
         // get the current item that the user has clicked;
         shared_ptr<Item> pickedItem = Menu::getSharedPtrItem();
@@ -155,13 +163,14 @@ void menuEditorProcess() {
         DrawText(itemName.c_str(), centerWidth - MeasureText(itemName.c_str(), 58) / 2, centerHeight - 300, 58, BLACK);
         DrawText(itemDescription.c_str(), centerWidth - MeasureText(itemDescription.c_str(), 28) / 2, centerHeight - 200, 28, BLACK);
         DrawText(priceText.c_str(), centerWidth - MeasureText(priceText.c_str(), 28) / 2, centerHeight - 150, 28, BLACK);
-        DrawText("New Item Name     :", centerWidth - MeasureText("New Table Number     :", 24) / 2 - 160, centerHeight - 80, 24, BLACK);
-        DrawText("New Description   :", centerWidth - MeasureText("New Description        :", 24) / 2 - 160, centerHeight, 24, BLACK);
-        DrawText("New Price           :", centerWidth - MeasureText("New Price                :", 24) / 2 - 160, centerHeight + 80, 24, BLACK);
+        DrawText("Please click enter after inputting", centerWidth - MeasureText("Please click enter after inputting", 22) / 2, centerHeight - 120, 22, BLACK);
+        DrawText("New Item Name     :", centerWidth - MeasureText("New Table Number     :", 24) / 2 - 160, centerHeight - 60, 24, BLACK);
+        DrawText("New Description   :", centerWidth - MeasureText("New Description        :", 24) / 2 - 160, centerHeight + 20, 24, BLACK);
+        DrawText("New Price           :", centerWidth - MeasureText("New Price                :", 24) / 2 - 160, centerHeight + 100, 24, BLACK);
 
         // I ADDED ONE MORE INPUT BOX
         for (int i = 0; i < threeInputBox; i++) {
-            Rectangle box = { centerWidth + 180 - 150, (centerHeight+80) - (i * 80), 300, 50 };
+            Rectangle box = { centerWidth + 180 - 170, (centerHeight+80) - (i * 80), 300, 50 };
 
             // If clicked, toggle editing mode
             if (GuiTextBox(box, threeInputs[i], 64, editModeThree[i])) { // make the 3 boxes with all edit mode being false, if clicked it will see what box have been clicked(j) and put it to editmode.
@@ -305,7 +314,7 @@ void menuEditor() {
 void editorMenu() {
     if (!exitWindow) {
         ClearBackground(GetColor(GuiGetStyle(DEFAULT, BACKGROUND_COLOR)));
-        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Process");
+        exitWindow = GuiWindowBox(Rectangle{ 50,50,screenWidth - 100, screenHeight - 100 }, "#198# Editor Menu");
         DrawText("What do you want to edit?", centerWidth - MeasureText("What do you want to edit?", 58) / 2, centerHeight - 300, 58, BLACK);
         if (GuiButton(Rectangle{ centerWidth - 100, centerHeight, 200, 40 }, "TABLE")) {
             exitWindow = false;

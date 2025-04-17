@@ -40,15 +40,18 @@ map<int, pair<shared_ptr<Item>, int>> Order::getNumToUserOrderAndAmount() const{
 }
 
 void Order::drawCustomerOrder() {
-	int gap = 80;
+	int gap = 60;
 	int i = 0;
 	for (const auto& item : numToUserOrderAndAmount) {
-		GuiLabel(Rectangle{ float(centerWidth - 350), float(centerHeight) + i * gap - 200, 450, 40 }, (item.second.first->getName().c_str()));
-		GuiLabel(Rectangle{ float(centerWidth + 300), float(centerHeight) + i * gap - 200, 450, 40 }, (to_string(item.second.second).c_str()));
+		GuiLabel(Rectangle{ float(centerWidth - 350), float(centerHeight) + i * gap - 300, 450, 40 }, (item.second.first->getName().c_str()));
+		GuiLabel(Rectangle{ float(centerWidth + 300), float(centerHeight) + i * gap - 300, 450, 40 }, (to_string(item.second.second).c_str()));
 		i++;
 	}
-	DrawText("Special Request", centerWidth - MeasureText("Special Request", 20) / 2, centerHeight + i * gap - 200, 20, BLACK);
-	GuiLabel(Rectangle{ float(centerWidth - 350), float(centerHeight) + i * gap - 150, 450, 40 }, (specialRequest).c_str());
+	if (specialRequest != "") {
+		DrawText("Special Request", centerWidth - MeasureText("Special Request", 20) / 2, centerHeight + i * gap - 300, 20, BLACK);
+		i++;
+		GuiLabel(Rectangle{ float(centerWidth - 350), float(centerHeight) + i * gap - 300, 800, 40 }, (specialRequest).c_str());
+	}
 }
 
 void Order::drawAllOrderReport() {
@@ -61,8 +64,7 @@ void Order::drawAllOrderReport() {
 	GuiLabel(Rectangle{ float(centerWidth) + col3, float(centerHeight) + i * gap - 400, 450, 40 }, ("Individual Price"));
 	GuiLabel(Rectangle{ float(centerWidth + col4), float(centerHeight) + i * gap - 400, 450, 40 }, ("Total"));
 	i = 1;
-	float todayTotalPrice = 0;
-	string todayPriceText = "";
+	
 	int totalAmount = 0;
 	for (const auto& item : itemToAmountOrdered) {
 		GuiLabel(Rectangle{ float(centerWidth + col1), float(centerHeight) + i * gap - 400, 450, 40 }, (item.first.c_str()));
@@ -73,12 +75,13 @@ void Order::drawAllOrderReport() {
 		GuiLabel(Rectangle{ float(centerWidth) + col3, float(centerHeight) + i * gap - 400, 450, 40 }, (priceText).c_str());
 		string totalPrice = "$" + Util::formatFloat(price * item.second.second);
 		GuiLabel(Rectangle{ float(centerWidth + col4), float(centerHeight) + i * gap - 400, 450, 40 }, (totalPrice).c_str());
-		todayTotalPrice += (price * item.second.second);
-		todayPriceText = "$" + Util::formatFloat(todayTotalPrice);
+		
 		i++;
 	}
 
 	i++;
+	float todayTotalPrice = getTotalIncome();
+	string todayPriceText = "$" + Util::formatFloat(todayTotalPrice);
 	GuiLabel(Rectangle{ float(centerWidth + col1), float(centerHeight) + i * gap - 400, 450, 40 }, ("Total Income : "));
 	GuiLabel(Rectangle{ float(centerWidth + col4), float(centerHeight) + i * gap - 400, 450, 40 }, (todayPriceText.c_str()));
 
@@ -129,8 +132,7 @@ string Order::getSpecialRequest() {
 }
 
 void Order::saveMostItemOrdered(Order order) {
-
-	//debug
+	// save current order to the order history, adding the amount
 	for (const auto& i : order.getNumToUserOrderAndAmount()) {
 		if (itemToAmountOrdered.find(i.second.first->getName()) != itemToAmountOrdered.end()) {
 			itemToAmountOrdered[i.second.first->getName()].second += i.second.second;
@@ -140,7 +142,7 @@ void Order::saveMostItemOrdered(Order order) {
 		}
 	}
 
-	// debug..
+	// console debug
 	cout << "Current All Report : ";
 	for (const auto& i : itemToAmountOrdered) {
 		cout << i.first << " $" << i.second.first->getPrice() << " " << i.second.second << endl;

@@ -14,12 +14,18 @@ public:
     }
 
     virtual void debug() const;
+
+    // getter
     const std::string& getName() const;
     const std::string& getDescription() const;
     float getPrice() const;
+
+    // setter
     void setName(std::string& name);
     void setDescription(std::string& description);
     void setPrice(float price);
+
+    virtual ~Item() = default;
 };
 
 class Special : public Item {
